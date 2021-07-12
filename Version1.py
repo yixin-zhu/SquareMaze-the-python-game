@@ -1,16 +1,23 @@
-mymap = [[1, 2, 3], [4, 6, 0], [7, 5, 8]]
-target = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+import random
+myMap = [[0] * 10 for i in range(10)]
+target = [[0] * 10 for i in range(10)]
 width = 3
 height = 3
+directions = {1: "w", 2: "a", 3: "s", 4: "z"}
 
 
 def victory():
     flag = True
     for i in range(height):
         for j in range(width):
-            if mymap[i][j] != target[i][j]:
+            if myMap[i][j] != target[i][j]:
                 flag = False
     return flag
+
+
+def getRandomDir():
+    i = random.randint(1, 4)
+    return directions[i]
 
 
 def printmap():
@@ -20,8 +27,8 @@ def printmap():
         print("+")
         for j in range(width):
             print("|", end="")
-            if mymap[i][j] > 0:
-                print("{:5d}".format(mymap[i][j]), end="")
+            if myMap[i][j] > 0:
+                print("{:5d}".format(myMap[i][j]), end="")
             else:
                 print("     ", end="")
         print("|")
@@ -33,14 +40,14 @@ def printmap():
 def findzero():
     for i in range(height):
         for j in range(width):
-            if mymap[i][j] == 0:
+            if myMap[i][j] == 0:
                 return i, j
 
 
 def change(x, y, i, j):
-    temp = mymap[i][j]
-    mymap[i][j] = mymap[x][y]
-    mymap[x][y] = temp
+    temp = myMap[i][j]
+    myMap[i][j] = myMap[x][y]
+    myMap[x][y] = temp
 
 
 def valid(i, j):
@@ -69,10 +76,26 @@ def move(dir):
         change(x, y, i, j)
 
 
+def initialize(times):
+    k = 1
+    for i in range(height):
+        for j in range(width):
+            myMap[i][j] = k
+            target[i][j] = k
+            k = k + 1
+    myMap[height-1][width-1] = 0
+    target[height-1][width-1] = 0
+    for i in range(times):
+        dir = getRandomDir()
+        move(dir)
+
+
+order = input("Please enter size of the map! You can choose 2,3,4,5\n")
+width = height = int(order)
+initialize(500)
 while(victory() is False):
     printmap()
     dir = input("Please move!\n")
     move(dir)
-
 printmap()
 print("Congratulations!")
